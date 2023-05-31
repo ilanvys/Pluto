@@ -35,4 +35,3 @@ if __name__ == '__main__':
     print(completion.choices[0].message)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
->>>>>>> b35e72d8da00d526d1c42ddfba70bce2e0108687
