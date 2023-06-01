@@ -197,8 +197,64 @@ def clean_txt(text):
 
 def check_answer(q_url , a_url):
     q_tex = req_from_mathpix(q_url)
-    a_tex = req_from_mathpix(a_url)
+    a_tex = req_from_mathpix_img(a_url)
     return "is my answer correct?" + q_tex +a_tex
+
+
+def req_from_mathpix_img(img_url):
+    app_id = "sahar_aharon_mail_huji_ac_il_3c7cbb_0e2a12"
+    app_key = "4f4bc73d80dd02413096cb9d6bc8ea8e9c17936956fda1e669f944e484f17b99"
+    url = "https://api.mathpix.com/v3/text"
+
+    r = requests.post("https://api.mathpix.com/v3/text",
+                      json={
+                          "src": img_url,
+                          "math_inline_delimiters": ["$", "$"],
+                          "rm_spaces": True
+                      },
+                      headers={
+                          "app_id": app_id,
+                          "app_key": app_key,
+                          "Content-type": "application/json"
+                      }
+                      )
+    return r.json()['text']
+
+    # response = requests.get(url + "/" + pdf_id , headers = headers)
+    # while(response.json()["status"] != "completed") :
+    #     time.sleep(1)
+    #     response = requests.get(url + "/" + pdf_id , headers = headers)
+    # # print("Processing done!")
+    #
+    #
+    # response = requests.get( "https://api.mathpix.com/v3/converter/" + pdf_id , headers= headers)
+    # while(response.json()["conversion_status"]["tex.zip"]["status"] != "completed") :
+    #     time.sleep(1)
+    #     response = requests.get("https://api.mathpix.com/v3/converter/" + pdf_id, headers=headers)
+    # # print("Processing latex done!")
+    #
+    #
+    # headers = {
+    #     "app_key": app_key,
+    #     "app_id": app_id
+    # }
+    # url = f"https://api.mathpix.com/v3/pdf/{pdf_id}.tex"
+    # response = requests.get(url, headers=headers)
+    # # print("all done!")
+    # text = response.text
+    #
+    # index = text.find("\\documentclass")
+    # if index != -1:
+    #     cleaned_text = text[index:]
+    # else:
+    #     cleaned_text = text
+    #
+    # cleaned_text_index = text.find("end{document}")
+    # if index != -1:
+    #     cleaned_text_end = cleaned_text[:cleaned_text_index + len("end{document}") ]
+    # else:
+    #     cleaned_text_end = cleaned_text
+    # return cleaned_text_end
 def req_from_mathpix(pdf_url):
     app_id = "sahar_aharon_mail_huji_ac_il_3c7cbb_0e2a12"
     app_key = "4f4bc73d80dd02413096cb9d6bc8ea8e9c17936956fda1e669f944e484f17b99"
@@ -293,6 +349,7 @@ if __name__ == '__main__':
     # pdf_url_global = "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/e9bbec7a9a25a87715e8edd75e21d7b9_MIT18_06S10_exam1_s10.pdf"
     # print(req_from_mathpix(pdf_url_global))
     # save_as_tex_file(pdf_latex)
-    print(clean_txt(tex_with_gar))
-    print(tex_with_gar)
+    # print(clean_txt(tex_with_gar))
+    # print(tex_with_gar)
+    req_from_mathpix_img("https://i.ibb.co/30Pc9bc/Whats-App-Image-2023-06-01-at-23-03-22.jpg")
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
