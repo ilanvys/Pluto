@@ -4,7 +4,7 @@ import requests
 
 
 url = "https://api.openai.com/v1/chat/completions"
-api_key = "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"
+api_key = "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"
 pdf_latex = "hello there"
 pdf_latex2 =r"""\documentclass[10pt]{article}
 \usepackage[utf8]{inputenc}

@@ -5,6 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from flask import request
 from flask_restx import Api, Resource, fields
+import subprocess
 
 from api.models import db, Datas
 from api.chatGPTRequests import *
@@ -12,23 +13,6 @@ from api.mathpixRequests import *
 from api.helpers import *
 
 rest_api = Api(version="1.0", title="Datas API")
-
-"""
-API Interface:
-   
-   - /datas
-       - GET: return all items
-       - POST: create a new item
-   
-   - /datas/:id
-       - GET    : get item
-       - PUT    : update item
-       - DELETE : delete item
-"""
-
-"""
-Flask-RestX models Request & Response DATA
-"""
 
 # Used to validate input data for creation
 create_model = rest_api.model('CreateModel', {"data": fields.String(required=True, min_length=1)})
@@ -119,6 +103,23 @@ class ItemManager(Resource):
         return {"success" : True,
                 "msg"     : "Successfully return item [" +str(id)+ "]",
                 "data"    :  item.generated_test_latex_easy}, 200
+    
+    def put(self, id):
+        item = Datas.get_by_id(id)
+        if not item:
+            return {"success": False, "msg": "Item not found."}, 400
+        
+        genreated_easy_test = clean_text_for_latex(get_genreated_easy_test(item.original_latex))
+        Datas.update_generated_test_latex_easy(item, genreated_easy_test)
+        
+        # create latex file and export PDF file
+        latex_file = "test_mit_latex.tex"
+        subprocess.run(["pdflatex", "-interaction=nonstopmode", latex_file])
+
+        return {"success" : True,
+                "msg"     : "Successfully return item [" +str(id)+ "]",
+                "data"    :  genreated_easy_test}, 200
+    
 
 #  Return medium version of a test by id if exists
 @rest_api.route('/test/medium_test/<int:id>')
@@ -137,6 +138,19 @@ class ItemManager(Resource):
         return {"success" : True,
                 "msg"     : "Successfully return item [" +str(id)+ "]",
                 "data"    :  item.generated_test_latex_medium}, 200
+    
+    def put(self, id):
+        item = Datas.get_by_id(id)
+        if not item:
+            return {"success": False, "msg": "Item not found."}, 400
+        
+        genreated_medium_test = clean_text_for_latex(get_genreated_medium_test(item.original_latex))
+        Datas.update_generated_test_latex_medium(item, genreated_medium_test)
+        
+        return {"success" : True,
+                "msg"     : "Successfully return item [" +str(id)+ "]",
+                "data"    :  genreated_medium_test}, 200
+    
 
 #  Return hard version of a test by id if exists
 @rest_api.route('/test/hard_test/<int:id>')
@@ -155,42 +169,6 @@ class ItemManager(Resource):
                 "msg"     : "Successfully return item [" +str(id)+ "]",
                 "data"    :  item.generated_test_latex_hard}, 200
 
-
-### request and update easy test
-@rest_api.route('/test/easy_test/<int:id>')
-class ItemManager(Resource):
-    def put(self, id):
-        item = Datas.get_by_id(id)
-        if not item:
-            return {"success": False, "msg": "Item not found."}, 400
-        
-        genreated_easy_test = clean_text_for_latex(get_genreated_easy_test(item.original_latex))
-        Datas.update_generated_test_latex_easy(item, genreated_easy_test)
-        
-        return {"success" : True,
-                "msg"     : "Successfully return item [" +str(id)+ "]",
-                "data"    :  genreated_easy_test}, 200
-
-
-### request and update medium test
-@rest_api.route('/test/medium_test/<int:id>')
-class ItemManager(Resource):
-    def put(self, id):
-        item = Datas.get_by_id(id)
-        if not item:
-            return {"success": False, "msg": "Item not found."}, 400
-        
-        genreated_medium_test = clean_text_for_latex(get_genreated_medium_test(item.original_latex))
-        Datas.update_generated_test_latex_medium(item, genreated_medium_test)
-        
-        return {"success" : True,
-                "msg"     : "Successfully return item [" +str(id)+ "]",
-                "data"    :  genreated_medium_test}, 200
-    
-
-### request and update hard test
-@rest_api.route('/test/hard_test/<int:id>')
-class ItemManager(Resource):
     def put(self, id):
         item = Datas.get_by_id(id)
         if not item:
