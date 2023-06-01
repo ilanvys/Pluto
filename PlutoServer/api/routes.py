@@ -28,10 +28,10 @@ Flask-RestX models Request & Response DATA
 """
 
 # Used to validate input data for creation
-create_model = rest_api.model('CreateModel', {"data": fields.String(required=True, min_length=1, max_length=255)})
+create_model = rest_api.model('CreateModel', {"data": fields.String(required=True, min_length=1)})
 
 # Used to validate input data for update
-update_model = rest_api.model('UpdateModel', {"data": fields.String(required=True, min_length=1, max_length=255)})
+update_model = rest_api.model('UpdateModel', {"data": fields.String(required=True, min_length=1)})
 
 """
     Flask-Restx routes
@@ -71,6 +71,16 @@ class Items(Resource):
         
         return {"success": True,
                 "msg"    : "Item successfully created ["+ str(new_item.id)+"]"}, 200
+
+    """
+       Delete Item
+    """
+    def delete(self):
+        Datas.query.delete()
+        db.session.commit()
+
+        return {"success" : True,
+                "msg"     : "Items successfully deleted"}, 200    
 
 @rest_api.route('/api/datas/<int:id>')
 class ItemManager(Resource):
@@ -133,3 +143,45 @@ class ItemManager(Resource):
 
         return {"success" : True,
                 "msg"     : "Item [" +str(id)+ "] successfully deleted"}, 200                           
+
+###################################################################
+####  PlutoServer
+###################################################################
+@rest_api.route('/chat')
+class Items(Resource):
+    """
+       Return all items
+    """
+    def get(self):
+
+        items = Datas.query.all()
+        
+        return {"success" : True,
+                "msg"     : "Items found ("+ str(len( items ))+")",
+                "datas"   : str( items ) }, 200
+
+    """
+       Create new item
+    """
+    @rest_api.expect(create_model, validate=True)
+    def post(self):
+
+        # Read ALL input  
+        req_data = request.get_json()
+
+        # Get the information    
+        item_data = req_data.get("data")
+
+        # TODO Send To chatGPT to get generated test
+
+        # Create new object
+        # TODO add the generated test text here
+        new_item = Datas(test_data_latex=item_data) 
+
+        # Save the data
+        new_item.save()
+        
+        return {"success": True,
+                "msg"    : "Item successfully created ["+ str(new_item.id)+"]"}, 200
+
+  
