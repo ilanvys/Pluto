@@ -66,9 +66,11 @@ $$
 
 
 \end{document}"""
+
 pdf_url_global = "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/e9bbec7a9a25a87715e8edd75e21d7b9_MIT18_06S10_exam1_s10.pdf"
 app_id = "sahar_aharon_mail_huji_ac_il_3c7cbb_0e2a12"
 app_key = "4f4bc73d80dd02413096cb9d6bc8ea8e9c17936956fda1e669f944e484f17b99"
+
 def req_from_mathpix(pdf_url):
     app_id = "sahar_aharon_mail_huji_ac_il_3c7cbb_0e2a12"
     app_key = "4f4bc73d80dd02413096cb9d6bc8ea8e9c17936956fda1e669f944e484f17b99"

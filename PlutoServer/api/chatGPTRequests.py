@@ -4,7 +4,7 @@ import requests
 
 
 url = "https://api.openai.com/v1/chat/completions"
-api_key = "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"
+api_key = "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"
 pdf_latex = "hello there"
 pdf_latex2 =r"""\documentclass[10pt]{article}
 \usepackage[utf8]{inputenc}
@@ -106,8 +106,77 @@ For information about citing these materials or our Terms of Use, visit: \href{h
 
 
 \end{document}"""
+pdf_latex_short = r"""\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan,}
+\urlstyle{same}
 
-def get_genreated_test(test_to_send):
+\begin{document}
+
+
+\begin{enumerate}
+  \setcounter{enumi}{0}
+  \item Forward elimination changes $A \mathbf{x}=\mathbf{b}$ to a row reduced $R \mathbf{x}=\mathbf{d}$ : the complete solution is
+
+\end{enumerate}
+
+$$
+\mathbf{x}=\left[\begin{array}{l}
+4 \\
+0 \\
+0
+\end{array}\right]+\mathbf{c}_{1}\left[\begin{array}{l}
+2 \\
+1 \\
+0
+\end{array}\right]+\mathbf{c}_{2}\left[\begin{array}{l}
+5 \\
+0 \\
+1
+\end{array}\right]
+$$
+
+(a) (14 points) What is the 3 by 3 reduced row echelon matrix $R$ and what is $\mathbf{d}$ ?
+
+(b) (10 points) If the process of elimination subtracted 3 times row 1 from row 2 and then 5 times row 1 from row 3 , what matrix connects $R$ and $\mathbf{d}$ to the original $A$ and $\mathbf{b}$ ? Use this matrix to find $A$ and $\mathbf{b}$. 
+
+\end{document}
+"""
+
+def get_genreated_easy_test(test_to_send):
+    payload = json.dumps({
+    "model": "gpt-3.5-turbo",
+    "messages": [
+        {
+        "role": "user",
+        "content": "can you make a new test at an easier level than this one in latex:" + test_to_send
+        }
+    ],
+    "temperature": 1,
+    "top_p": 1,
+    "n": 1,
+    "stream": False,
+    #   "max_tokens": 250,
+    "presence_penalty": 0,
+    "frequency_penalty": 0
+    })
+    headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    "Authorization": "Bearer " + api_key
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    return json.loads(response.content)['choices'][0]['message']['content']
+
+def get_genreated_medium_test(test_to_send):
     payload = json.dumps({
     "model": "gpt-3.5-turbo",
     "messages": [
@@ -132,4 +201,29 @@ def get_genreated_test(test_to_send):
 
     response = requests.request("POST", url, headers=headers, data=payload)
     return json.loads(response.content)['choices'][0]['message']['content']
-    
+
+def get_genreated_hard_test(test_to_send):
+    payload = json.dumps({
+    "model": "gpt-3.5-turbo",
+    "messages": [
+        {
+        "role": "user",
+        "content": "can you make a new test that is harder than this one in latex:" + test_to_send
+        }
+    ],
+    "temperature": 1,
+    "top_p": 1,
+    "n": 1,
+    "stream": False,
+    #   "max_tokens": 250,
+    "presence_penalty": 0,
+    "frequency_penalty": 0
+    })
+    headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    "Authorization": "Bearer " + api_key
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    return json.loads(response.content)['choices'][0]['message']['content']
