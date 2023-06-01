@@ -5,7 +5,6 @@ Copyright (c) 2019 - present AppSeed.us
 
 from flask import request
 from flask_restx import Api, Resource, fields
-import subprocess
 
 from api.models import db, Datas
 from api.chatGPTRequests import *
@@ -113,8 +112,7 @@ class ItemManager(Resource):
         Datas.update_generated_test_latex_easy(item, genreated_easy_test)
         
         # create latex file and export PDF file
-        latex_file = "test_mit_latex.tex"
-        subprocess.run(["pdflatex", "-interaction=nonstopmode", latex_file])
+        save_to_pdf(genreated_easy_test, "test_similar_version")
 
         return {"success" : True,
                 "msg"     : "Successfully return item [" +str(id)+ "]",
@@ -147,6 +145,9 @@ class ItemManager(Resource):
         genreated_medium_test = clean_text_for_latex(get_genreated_medium_test(item.original_latex))
         Datas.update_generated_test_latex_medium(item, genreated_medium_test)
         
+        # create latex file and export PDF file
+        save_to_pdf(genreated_medium_test, "test_easy_version")
+
         return {"success" : True,
                 "msg"     : "Successfully return item [" +str(id)+ "]",
                 "data"    :  genreated_medium_test}, 200
@@ -177,6 +178,9 @@ class ItemManager(Resource):
         genreated_hard_test = clean_text_for_latex(get_genreated_hard_test(item.original_latex))
         Datas.update_generated_test_latex_hard(item, genreated_hard_test)
         
+        # create latex file and export PDF file
+        save_to_pdf(genreated_hard_test, "test_hard_version")
+
         return {"success" : True,
                 "msg"     : "Successfully return item [" +str(id)+ "]",
                 "data"    :  genreated_hard_test}, 200

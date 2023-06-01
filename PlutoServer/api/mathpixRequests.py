@@ -2,16 +2,16 @@
 import requests
 import time
 from api.helpers import clean_text_for_latex
+from api.api_config import *
 
 pdf_url_global = "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/e9bbec7a9a25a87715e8edd75e21d7b9_MIT18_06S10_exam1_s10.pdf"
-app_id = "sahar_aharon_mail_huji_ac_il_3c7cbb_a77038"
-app_key = "464f5b5e141d1f0f05fb35bb152fd1096c21fea56f6a8e79d8d88ee413a04cd6"
+
 def get_latex_from_pdf(pdf_url):
-    app_id = "sahar_aharon_mail_huji_ac_il_3c7cbb_a77038"
-    app_key = "464f5b5e141d1f0f05fb35bb152fd1096c21fea56f6a8e79d8d88ee413a04cd6"
-    url = "https://api.mathpix.com/v3/pdf"
+    app_id = MATHPIX_ID
+    app_key = MATHPIX_KEY
+    url = MATHPIX_URL
     payload = {
-        "url": pdf_url_global,
+        "url": pdf_url,
         "conversion_formats": {
             "docx": True,
             "tex.zip": True
