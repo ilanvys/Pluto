@@ -13,7 +13,7 @@ db = SQLAlchemy()
 
 class Datas(db.Model):
 
-    test_id           = db.Column(db.Integer()   , primary_key=True)
+    _id           = db.Column(db.Integer()   , primary_key=True)
     date_created = db.Column(db.DateTime()  , default=datetime.utcnow)
     test_data_latex         = db.Column(db.UnicodeText , nullable=False)
     generated_test_latex         = db.Column(db.UnicodeText, nullable=False)
@@ -30,18 +30,18 @@ class Datas(db.Model):
 
     @classmethod
     def get_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
+        return cls.query.filter_by(_id=id).first()
     
     def get_test_by_id(cls, id):
-        return (cls.query.filter_by(id=id).first())['test_data_latex']
+        return (cls.query.filter_by(_id=id).first())['test_data_latex']
     
     def get_generated_test_by_id(cls, id):
-        return (cls.query.filter_by(id=id).first())['generated_test_latex']
+        return (cls.query.filter_by(_id=id).first())['generated_test_latex']
 
     def toDICT(self):
 
         cls_dict         = {}
-        cls_dict['_id']  = self.id
+        cls_dict['_id']  = self._id
         cls_dict['test_data_latex'] = self.test_data_latex
         cls_dict['generated_test_latex'] = self.generated_test_latex
 

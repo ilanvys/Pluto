@@ -7,6 +7,7 @@ from flask import request
 from flask_restx import Api, Resource, fields
 
 from api.models import db, Datas
+from api.chatGPTRequests import *
 
 rest_api = Api(version="1.0", title="Datas API")
 
@@ -170,18 +171,36 @@ class Items(Resource):
         req_data = request.get_json()
 
         # Get the information    
-        item_data = req_data.get("data")
+        # test_data = req_data.get("data")
+        test_data = pdf_latex
 
         # TODO Send To chatGPT to get generated test
-
+        generated_test = get_genreated_test(test_data)
+        
         # Create new object
-        # TODO add the generated test text here
-        new_item = Datas(test_data_latex=item_data) 
+        new_item = Datas(test_data_latex=test_data, generated_test_latex=generated_test) 
 
         # Save the data
         new_item.save()
         
         return {"success": True,
-                "msg"    : "Item successfully created ["+ str(new_item.id)+"]"}, 200
+                "msg"    : "Item successfully created"}, 200
 
+@rest_api.route('/chat/<int:id>')
+class ItemManager(Resource):
+
+    """
+       Return Item
+    """
+    def get(self, id):
+
+        item = Datas.get_by_id(id)
+
+        if not item:
+            return {"success": False,
+                    "msg": "Item not found."}, 400
+
+        return {"success" : True,
+                "msg"     : "Successfully return item [" +str(id)+ "]",
+                "data"    :  item.toJSON()}, 200
   

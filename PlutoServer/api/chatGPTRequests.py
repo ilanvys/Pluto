@@ -2,9 +2,11 @@ import json
 import requests
 
 
+
 url = "https://api.openai.com/v1/chat/completions"
-api_key = "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"
-pdf_latex =r"""\documentclass[10pt]{article}
+api_key = "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"
+pdf_latex = "hello there"
+pdf_latex2 =r"""\documentclass[10pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
@@ -105,28 +107,29 @@ For information about citing these materials or our Terms of Use, visit: \href{h
 
 \end{document}"""
 
-payload = json.dumps({
-  "model": "gpt-3.5-turbo",
-  "messages": [
-    {
-      "role": "user",
-      "content": "can you make a new test at the same level as this one in latex:" + pdf_latex
+def get_genreated_test(test_to_send):
+    payload = json.dumps({
+    "model": "gpt-3.5-turbo",
+    "messages": [
+        {
+        "role": "user",
+        "content": "can you make a new test at the same level as this one in latex:" + test_to_send
+        }
+    ],
+    "temperature": 1,
+    "top_p": 1,
+    "n": 1,
+    "stream": False,
+    #   "max_tokens": 250,
+    "presence_penalty": 0,
+    "frequency_penalty": 0
+    })
+    headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    "Authorization": "Bearer " + api_key
     }
-  ],
-  "temperature": 1,
-  "top_p": 1,
-  "n": 1,
-  "stream": False,
-#   "max_tokens": 250,
-  "presence_penalty": 0,
-  "frequency_penalty": 0
-})
-headers = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  "Authorization": "Bearer " + api_key
-}
 
-response = requests.request("POST", url, headers=headers, data=payload)
-res = json.loads(response.content)['choices'][0]['message']['content']
-print(response)
+    response = requests.request("POST", url, headers=headers, data=payload)
+    return json.loads(response.content)['choices'][0]['message']['content']
+    
