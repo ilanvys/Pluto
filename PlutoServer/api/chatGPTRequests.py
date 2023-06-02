@@ -227,3 +227,29 @@ def get_genreated_hard_test(test_to_send):
 
     response = requests.request("POST", url, headers=headers, data=payload)
     return json.loads(response.content)['choices'][0]['message']['content']
+
+def ask_chat_gpt(text_to_send):
+    payload = json.dumps({
+    "model": "gpt-3.5-turbo",
+    "messages": [
+        {
+        "role": "user",
+        "content": text_to_send
+        }
+    ],
+    "temperature": 1,
+    "top_p": 1,
+    "n": 1,
+    "stream": False,
+    #   "max_tokens": 250,
+    "presence_penalty": 0,
+    "frequency_penalty": 0
+    })
+    headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    "Authorization": "Bearer " + api_key
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    return json.loads(response.content)['choices'][0]['message']['content']

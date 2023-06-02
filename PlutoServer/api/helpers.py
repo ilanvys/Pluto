@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 def clean_text_for_latex(text):
     index = text.find("\\documentclass")
@@ -24,3 +25,26 @@ def save_to_pdf(input_string, output_file_name):
 
     subprocess.run(["pdflatex", "-interaction=nonstopmode", file_path])
     
+    os.remove(output_file_name + ".aux")
+    os.remove(output_file_name + ".log")
+    os.remove(output_file_name + ".out")
+    os.remove(output_file_name + ".tex")
+
+pdf_begin  = r"""\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan,}
+\urlstyle{same}
+
+\begin{document}
+
+"""
+
+pdf_end = r"""
+\end{document}"""

@@ -51,3 +51,23 @@ def get_latex_from_pdf(pdf_url):
     text = response.text
 
     return clean_text_for_latex(text)
+
+
+def get_latex_from_img(img_url):
+    app_id = MATHPIX_ID
+    app_key = MATHPIX_KEY
+    url = MATHPIX_URL
+
+    r = requests.post("https://api.mathpix.com/v3/text",
+                      json={
+                          "src": img_url,
+                          "math_inline_delimiters": ["$", "$"],
+                          "rm_spaces": True
+                      },
+                      headers={
+                          "app_id": app_id,
+                          "app_key": app_key,
+                          "Content-type": "application/json"
+                      }
+                      )
+    return r.json()['text']
